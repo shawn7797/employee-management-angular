@@ -1,0 +1,46 @@
+<nz-modal
+  [nzVisible]="isModalVisible()"
+  nzTitle="Add Employee"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+>
+  <ng-container *nzModalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="employeeForm">
+      <!-- Name -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Name</nz-form-label>
+
+        <nz-form-control nzErrorTip="Please enter a valid name (minimum 3 characters).">
+          <input nz-input formControlName="name" placeholder="Enter name" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Role -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Role</nz-form-label>
+
+        <nz-form-control nzErrorTip="Please enter a role.">
+          <input nz-input formControlName="role" placeholder="Enter role" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Department -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Department</nz-form-label>
+
+        <nz-form-control nzErrorTip="Please enter a department.">
+          <input nz-input formControlName="department" placeholder="Enter department" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Email -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Email</nz-form-label>
+
+        <nz-form-control nzErrorTip="Please enter a valid email address.">
+          <input nz-input type="email" formControlName="email" placeholder="Enter email" />
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

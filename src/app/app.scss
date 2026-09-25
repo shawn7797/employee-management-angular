@@ -1,0 +1,11 @@
+main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+app-employee-table {
+  flex: 1;
+  min-height: 0;
+}

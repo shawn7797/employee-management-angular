@@ -1,8 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavBar } from './components/nav-bar/nav-bar';
+import { EmployeeFilter } from './components/employee-filter/employee-filter';
+import { EmployeeTable } from './components/employee-table/employee-table';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [NavBar, EmployeeFilter, EmployeeTable],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',

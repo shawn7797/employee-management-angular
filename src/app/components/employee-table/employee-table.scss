@@ -1,0 +1,7 @@
+.employee-table {
+  margin: 0 16px;
+
+  & .anticon.anticon-delete {
+    cursor: pointer;
+  }
+}
