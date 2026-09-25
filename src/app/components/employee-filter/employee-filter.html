@@ -1,0 +1,13 @@
+<nz-input-search
+  nzAllowClear
+  (nzSearch)="onSearch($event)"
+  class="employee-filter"
+>
+  <input
+    nzSize="large"
+    nz-input
+    [(ngModel)]="value"
+    (ngModelChange)="onSearch($event)"
+    placeholder="Search by 'name', 'designation' and 'department'"
+  />
+</nz-input-search>

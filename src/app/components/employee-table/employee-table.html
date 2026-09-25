@@ -1,0 +1,35 @@
+<nz-table
+  #basicTable
+  [nzData]="employees()"
+  class="employee-table"
+  [nzScroll]="{ y: 'calc(100vh - 180px)' }"
+>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Designation</th>
+      <th>Department</th>
+      <th>Email</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (emp of basicTable.data; track emp.id) {
+      <tr>
+        <td>{{ emp.name }}</td>
+        <td>{{ emp.role }}</td>
+        <td>{{ emp.department }}</td>
+        <td>{{ emp.email }}</td>
+        <td>
+          <a
+            nz-popconfirm
+            nzPopconfirmTitle="Are you sure delete this task?"
+            (nzOnConfirm)="deleteEmployee(emp.id)"
+          >
+            <nz-icon nzType="delete" nzTheme="outline" />
+          </a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
