@@ -1,59 +1,165 @@
-# EmployeeManagementAngular
+# Employee Management App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+A full-stack CRUD application for managing employee records, built with **Angular** (TypeScript) on the frontend and **Django REST Framework** on the backend.
 
-## Development server
+The frontend uses **Angular Signals** for shared state, **Reactive Forms** for validated input, and **NG-ZORRO** for the UI. It talks to a REST API exposed by Django REST Framework.
+****
+## Features
 
-To start a local development server, run:
+- **Employee table:** view all employees in a full-height, flexbox-based table layout
+- **Add employee:** modal form with Reactive Forms validation
+- **Delete employee:** confirmation prompt before deletion
+- **Auto-refresh:** the list reloads after every create or delete, so the UI always matches the database
+- **Shared state:** employee data is held in an Angular Signal and consumed reactively by components
 
-```bash
-ng serve
+## Tech Stack
+
+| Layer    | Technologies                                                                                               |
+| -------- | ---------------------------------------------------------------------------------------------------------- |
+| Frontend | Angular, TypeScript, Angular Signals, Reactive Forms, HttpClient (RxJS Observables), NG-ZORRO, SCSS, HTML5 |
+| Backend  | Python, Django, Django REST Framework (`ModelViewSet`, `DefaultRouter`)                                    |
+
+## Architecture
+
+```text
+┌────────────────────────┐   HTTP / JSON   ┌──────────────────────────┐
+│ Angular frontend       │ ──────────────► │ Django REST Framework    │
+│ Components + Signals   │ ◄────────────── │ ModelViewSet + Router    │
+│ EmployeeService        │                 │ Serializer + Model       │
+└────────────────────────┘                 └──────────────────────────┘
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### How the data flows
 
-## Code scaffolding
+1. The employee table asks `EmployeeService` to load employees.
+2. The service sends a `GET` request to the Django API.
+3. The response is stored in an Angular Signal.
+4. Components read the Signal, so the table re-renders automatically when the list changes.
+5. Adding an employee: the modal validates the form, then the service sends a `POST`.
+6. Deleting an employee: after the user confirms, the service sends a `DELETE`.
+7. After a successful create or delete, the service re-fetches the list and updates the Signal.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## API Reference
 
-```bash
-ng generate component component-name
+Base path: `/api/v1/`
+
+| Method | Endpoint                  | Description                  |
+| ------ | ------------------------- | ---------------------------- |
+| GET    | `/api/v1/employees/`      | List all employees           |
+| POST   | `/api/v1/employees/`      | Create an employee           |
+| GET    | `/api/v1/employees/<id>/` | Retrieve an employee         |
+| PUT    | `/api/v1/employees/<id>/` | Update an employee           |
+| PATCH  | `/api/v1/employees/<id>/` | Partially update an employee |
+| DELETE | `/api/v1/employees/<id>/` | Delete an employee           |
+
+The backend supports full CRUD. The UI currently implements list, create, and delete (see [Roadmap](#roadmap)).
+
+### Employee model
+
+| Field        | Type    | Description                          |
+| ------------ | ------- | ------------------------------------ |
+| `id`         | Integer | Unique database-generated identifier |
+| `name`       | String  | Employee name                        |
+| `role`       | String  | Job title or designation             |
+| `department` | String  | Department                           |
+| `email`      | String  | Email address                        |
+
+## Project Structure
+
+```text
+employee-management-angular/
+├── frontend/
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── components/   # employee table, nav bar, etc.
+│   │   │   ├── models/       # TypeScript interfaces
+│   │   │   └── services/     # EmployeeService (HTTP + Signal state)
+│   │   └── environments/     # API base URL
+│   └── package.json
+└── backend/
+    ├── employees/
+    │   ├── models.py
+    │   ├── serializers.py
+    │   ├── views.py
+    │   └── urls.py
+    └── manage.py
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm
+- Python 3 and pip
+- Git
+
+### 1. Clone the repository
 
 ```bash
-ng generate --help
+git clone https://github.com/shawn7797/employee-management-angular.git
+cd employee-management-angular
 ```
 
-## Building
-
-To build the project run:
+### 2. Run the Django backend
 
 ```bash
-ng build
+cd backend
+python -m venv .venv
+
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# macOS / Linux
+source .venv/bin/activate
+
+pip install django djangorestframework django-cors-headers
+python manage.py migrate
+python manage.py runserver
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The API runs at `http://127.0.0.1:8000/`.
 
-## Running unit tests
+> The Angular dev server runs on a different origin, so Django must allow it via CORS (for example, `django-cors-headers` with `http://localhost:4200` in `CORS_ALLOWED_ORIGINS`).
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### 3. Run the Angular frontend
+
+In a new terminal:
 
 ```bash
-ng test
+cd frontend
+npm install
+npx ng serve
 ```
 
-## Running end-to-end tests
+Open `http://localhost:4200/`.
 
-For end-to-end (e2e) testing, run:
+The API base URL is configured in the Angular environment file:
 
-```bash
-ng e2e
+```typescript
+export const environment = {
+  baseUrl: 'http://127.0.0.1:8000/api/v1/',
+};
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## What This Project Demonstrates
 
-## Additional Resources
+**Angular**
+- Component-based UI built with NG-ZORRO
+- A service layer that centralises HTTP calls and shared state
+- Signals for reactive state shared across components
+- Reactive Forms with validation
+- `HttpClient` and Observables for async API calls
+- Dependency injection with `inject()`
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+**Django REST Framework**
+- Models and serializers for database-backed records
+- `ModelViewSet` and `DefaultRouter` for CRUD routes
+- Versioned API under `/api/v1/`
+
+## Roadmap
+
+- [ ] Edit employee details (backend `PUT`/`PATCH` already available)
+- [ ] Search, filter, sorting, and pagination
+- [ ] Loading indicators and success/error notifications
+- [ ] Unit and integration tests
+- [ ] Authentication and permissions
+- [ ] Deployment
