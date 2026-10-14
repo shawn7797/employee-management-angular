@@ -11,14 +11,11 @@ import { NzInputModule, NzInputSearchEvent } from 'ng-zorro-antd/input';
   templateUrl: './employee-filter.html',
 })
 export class EmployeeFilter {
-  value = model('');
-
-  ngOnChanges() {
-    console.log(this.value);
-    
-  }
+  searchValue = model('');
 
   onSearch(event: NzInputSearchEvent): void {
     console.log(event);
+    
+    this.searchValue.set(event.value);
   }
 }

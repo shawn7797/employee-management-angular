@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, debounced, signal } from '@angular/core';
 import { NavBar } from './components/nav-bar/nav-bar';
 import { EmployeeFilter } from './components/employee-filter/employee-filter';
 import { EmployeeTable } from './components/employee-table/employee-table';
@@ -11,4 +11,8 @@ import { EmployeeTable } from './components/employee-table/employee-table';
 })
 export class App {
   protected readonly title = signal('employee-management-angular');
+
+  readonly searchValue = signal('');
+
+  protected readonly debouncedSearch = debounced(this.searchValue, 450);
 }
